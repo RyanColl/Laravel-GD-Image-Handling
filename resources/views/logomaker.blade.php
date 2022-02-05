@@ -42,7 +42,7 @@
         </ul>
       </div>
     @endif
-    <h3 class="jumbotron">Laravel Creation Station <a href="/"><button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Return to Main Page</button></a></h3>
+    <h3 class="jumbotron">Laravel Creation Station <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"><a href="/">Return to Main Page</a></button></h3>
     <h4 class="jumbotron">Upload and image to see variations of the image returned. Fill out the watermark to see it on the image.</h4>
 
     <form class='' method="post" action="{{url('create')}}" enctype="multipart/form-data">
