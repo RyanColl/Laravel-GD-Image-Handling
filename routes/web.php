@@ -23,6 +23,6 @@ Route::get('/rainbow',[ImageController::class, 'rainbow']);
 
 Route::get('/create', [ImageController::class, 'creationStation']);
 
-Route::post('/create',[ImageController::class, 'store']);
+Route::post('/create',[ImageController::class, 'store']); // store is a post-only function
 
-Route::get('/logomaker',[ImageController::class, 'store']);
+Route::get('/logomaker',[ImageController::class, 'logoMaker']);
