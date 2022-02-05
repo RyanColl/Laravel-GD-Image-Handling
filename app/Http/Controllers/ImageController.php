@@ -23,7 +23,7 @@ class ImageController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function rainbow()
     {
         function createRainbow($base_width, $base_height) {
             //create the image object based on input width and height
@@ -59,8 +59,8 @@ class ImageController extends Controller
             // return the image object
             return $img;
         }
-        $img1 = createRainbow(500, 500);
-        $newImg = Image::make($img1);
+        $img = createRainbow(500, 500);
+        $newImg = Image::make($img);
         $path = public_path().'/arcs/';
         $newImg->save($path.time().'arc.png');
         $imagemodel= new ImageModel();
@@ -68,10 +68,21 @@ class ImageController extends Controller
         $imagemodel->save();
 
         $image = ImageModel::latest()->first();
-        return view('createimage', compact('image'));
+        return view('rainbow', compact('image'));
         // return view('createimage');
     }
 
+
+    public function creationStation(Request $request)
+    {
+        $image = ImageModel::latest()->first();
+        return view('createimage', compact('image'));
+    }
+
+    public function logoMaker(Request $request)
+    {
+        return view('logomaker');
+    }
     /**
      * Store a newly created resource in storage.
      *
@@ -81,35 +92,218 @@ class ImageController extends Controller
     public function store(Request $request)
     {
         $this->validate($request, [
-            'filename' => 'image|required|mimes:jpeg,png,jpg,gif,svg'
+            'filename' => 'image|required|mimes:jpeg,png,jpg,gif'
          ]);
+        function killFilesInPublicPath($path) {
+            $files = glob(public_path().$path); // get all file names
+            foreach($files as $file) { // iterate files
+                if(is_file($file)) {
+                    unlink($file); // delete file
+                }
+            }
+        }
+        //clear out folders folders
+        killFilesInPublicPath('/thumbnail/*');
+        killFilesInPublicPath('/images/*');
+        killFilesInPublicPath('/arcs/*');
+        killFilesInPublicPath('/watermarked/*');
         
-
-
-
-
-        
-         // THUMBNAIL AND ORIGINAL 
+        // get time
         $time = date('Mhis', time());
-        $originalImage= $request->file('filename');
-        $thumbnailImage = Image::make($originalImage);
+        // get extension
+        $ext = $request->file('filename')->extension();
+
+        
+         // THUMBNAIL
+        // get file
+        $ogFileName = $request->file('filename');
+        
+        // make an image model based off of the original file
+        $thumbnailImage = Image::make($ogFileName);
+
+        // make width and height variables
+        $width = $thumbnailImage->width();
+        $height = $thumbnailImage->height();
+
+        // thumbnail and original paths
         $thumbnailPath = public_path().'/thumbnail/';
-        $originalPath = public_path().'/images/';
+        $ogFilePath = public_path().'/images/';
+        $ogFullPath = $ogFilePath.$time.$ogFileName->getClientOriginalName();
 
-        // $thumbnailImage->save($originalPath.time().$originalImage->getClientOriginalName());
-        $thumbNail = $time.$originalImage->getClientOriginalName();
-        $thumbnailImage->resize(150,150);
+        // create variable to hold our thumbnail path for the front end
+        $thumbNail = $time.$ogFileName->getClientOriginalName();
+        $thumbNailFullPath = $thumbnailPath.$thumbNail;
+        // save the image model into the public directory with its own path.
+        $thumbnailImage->save($ogFullPath);
+        
+        
+        // using laravel ImageModel, we resize the image
+        function changeSize($model, $multiplyer) {
+            if($model->width() > 1500 || $model->height() > 1500) {
+                $model->resize($model->width()/10*$multiplyer,$model->height()/10*$multiplyer);
+            } else {
+                if($model->width() > $model->height()) {
+                    $model->resize(200*$multiplyer, 150*$multiplyer);
+                } else {
+                    $model->resize(150*$multiplyer, 200*$multiplyer);
+                }
+            }
+        }
+        changeSize($thumbnailImage, 1);
+        
+        
+        // using laravel ImageModel, we rotate the image 
         // $thumbnailImage->rotate(180);
-        $thumbnailImage->save($thumbnailPath.$thumbNail); 
+        // using laravel ImageModel, we save the image to the front end
+        $thumbnailImage->save($thumbNailFullPath); 
 
+        
+
+        // WATERMARK
+
+        //get watermark from user input
+        $watermark = $request->input('watermark');
+
+
+        //intervention uses gd library
+        function applyTextToModel($model, $text, $width, $height) {
+            $model->text($text, $width, $height, function($font) {
+                $font->file(app_path().'/Fonts/NunitoSans-Regular.ttf');
+                $font->size(48);
+                $font->color([255, 255, 255, 0.65]);
+                $font->align('center');
+                $font->valign('top');
+                $font->angle(45);
+            });
+        }
+        // gd library saving image to public path so it can be made into a model -> optional
+        function createWatermarkImage($text, $ext, $path) {
+            // assign proper type to img
+            function addText($img, $text){
+                $font_path = app_path().'/Fonts/NunitoSans-Regular.ttf'; // font file path
+                $white = imagecolorallocatealpha($img, 255, 255, 255, 80); // Allocate A Color For The Text
+                imagestring($img, 5, 5, 50, $text, $white); // Print text on image   
+            }
+            $watermarkPath = public_path().'/thumbnail/watermark';
+            if($ext === 'jpeg' || $ext === 'jpg') {
+                $img = imagecreatefromjpeg($path);
+                addText($img, $text);
+                imagejpeg($img, "$watermarkPath.$ext");
+                imagedestroy($img);
+            } else if ($ext === 'png') {
+                $img = imagecreatefrompng($path);
+                addText($img, $text);
+                imagepng($img, "$watermarkPath.$ext");
+                imagedestroy($img);
+            } else if ($ext === 'gif') {
+                $img = imagecreatefromgif($path);
+                addText($img, $text);
+                imagegif($img, "$watermarkPath.$ext");
+                imagedestroy($img);
+            }
+        }
+        // insert text, the extension type, and the full path of the thumbnail, create a watermark copy
+        // createWatermarkImage($watermark, $ext, $thumbNailFullPath); // -> optional
+
+        // ALTERNATIVE WAY TO WATERMARK, BUT WITH ROTATION
+
+        // apply text to model
+        // applyTextToModel($thumbnailImage, $watermark, $width/10/2, $height/10/2);
+        $thumbnailImage->text($watermark, $width/10/2, $height/10/2, function($font) {
+            $font->file(app_path().'/Fonts/NunitoSans-Regular.ttf');
+            $font->size(24);
+            $font->color([255, 255, 255, 0.65]);
+            $font->align('center');
+            $font->valign('top');
+            $font->angle(45);
+        });
+        // //save model
+        $thumbnailImage->save(public_path()."/thumbnail/watermark.$ext");
+        //destroy it
+        $thumbnailImage->destroy();
+        
+
+        // create from original path the file
+        $smallVariant = Image::make($ogFullPath);
+        // use change size to make it small
+        changeSize($smallVariant, 2);
+
+        // save it as small
+        $smallVariant->save(public_path()."/images/small.$ext");
+
+        $smallVariant->text($watermark, $width/5/2, $height/5/2, function($font) {
+            $font->file(app_path().'/Fonts/NunitoSans-Regular.ttf');
+            $font->size(32);
+            $font->color([255, 255, 255, 0.65]);
+            $font->align('center');
+            $font->valign('top');
+            $font->angle(45);
+        });
+        // use intervention to apply text to image with filters
+        // applyTextToModel($smallVariant, $watermark, $width/5/2, $height/5/2);
+
+
+        // save it as watermarked
+        $smallVariant->save(public_path()."/watermarked/small.$ext");
+
+        $smallVariant->destroy();
+
+        // create image from original's full path
+        $medVariant = Image::make($ogFullPath);
+        // use change size to make it small
+        changeSize($medVariant, 3);
+        // save it as med
+        $medVariant->save(public_path()."/images/med.$ext");
+        // apply text to model
+        applyTextToModel($medVariant, $watermark, $width/3.33333/2, $height/3.33333/2);
+        // save it as watermarked
+        $medVariant->save(public_path()."/watermarked/med.$ext");
+        $medVariant->destroy();
+
+        $largeVariant = Image::make($ogFullPath);
+        changeSize($largeVariant, 4);
+        $largeVariant->save(public_path()."/images/large.$ext");
+        $largeVariant->text($watermark, $width/5, $height/5, function($font) {
+            $font->file(app_path().'/Fonts/NunitoSans-Regular.ttf');
+            $font->size(64);
+            $font->color([255, 255, 255, 0.65]);
+            $font->align('center');
+            $font->valign('top');
+            $font->angle(45);
+        });
+        $largeVariant->save(public_path()."/watermarked/large.$ext");
+        $largeVariant->destroy();
+
+        $xtraLargeVariant = Image::make($ogFullPath);
+        changeSize($xtraLargeVariant, 5);
+        $xtraLargeVariant->save(public_path()."/images/xtralarge.$ext");
+        $xtraLargeVariant->text($watermark, $width/5.5, $height/5.5, function($font) {
+            $font->file(app_path().'/Fonts/NunitoSans-Regular.ttf');
+            $font->size(80);
+            $font->color([255, 255, 255, 0.65]);
+            $font->align('center');
+            $font->valign('top');
+            $font->angle(45);
+        });
+        $xtraLargeVariant->save(public_path()."/watermarked/xtralarge.$ext");
+        $xtraLargeVariant->destroy();
+        // create empty model.
         $imagemodel= new ImageModel();
-        $imagemodel->filename=$time.$originalImage->getClientOriginalName();
+          // give it a file name.
+        $imagemodel->filename=$time.$ogFileName->getClientOriginalName();
+        // save it to the db => => => I think <= <= <=
         $imagemodel->save();
+
+
 
         return back()
             ->with('success', 'Your images has been successfully Uploaded')
-            ->with('thumbnail', $thumbNail);
-
+            ->with('thumbnail', $thumbNail)
+            ->with('thumbnailWatermark', "watermark.$ext")
+            ->with('small', "small.$ext")
+            ->with('med', "med.$ext")
+            ->with('large', "large.$ext")
+            ->with('xtralarge', "xtralarge.$ext");
     }
 
     /**

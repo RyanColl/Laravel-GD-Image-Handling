@@ -74,58 +74,6 @@
             <img src="/thumbnail/{{session('thumbnailWatermark')}}"  />
        	 </div> 
         </div>
-        <div class="row xtra">
-         <div class="col-md-4 control">
-            <strong>Small Image:</strong>
-            <br/>
-            <img src="/images/{{session('small')}}"  />
-       	 </div> 
-          <div class="col-md-4 control">
-            <strong>Watermarked Version:</strong>
-            <br/>
-            <img src="/watermarked/{{session('small')}}"  />
-       	 </div> 
-        </div>
-        <div class="row xtra">
-         <div class="col-md-4 control">
-            <strong>Medium Image:</strong>
-            <br/>
-            <img src="/images/{{session('med')}}"  />
-       	 </div> 
-          <div class="col-md-4 control">
-            <strong>Watermarked Version:</strong>
-            <br/>
-            <img src="/watermarked/{{session('med')}}"  />
-       	 </div> 
-        </div>
-        <div class="row xtra">
-         <div class="col-md-4 control">
-            <strong>Large Image:</strong>
-            <br/>
-            <img src="/images/{{session('large')}}"  />
-       	 </div> 
-        </div>
-        <div class="row xtra">
-         <div class="col-md-4 control">
-            <strong>Watermarked Image:</strong>
-            <br/>
-            <img src="/watermarked/{{session('large')}}"  />
-       	 </div> 
-        </div>
-        <div class="row xtra">
-         <div class="col-md-4 control">
-            <strong>Xtra-Large Image:</strong>
-            <br/>
-            <img src="/images/{{session('xtralarge')}}"  />
-       	 </div> 
-        </div>
-        <div class="row xtra">
-         <div class="col-md-4 control">
-            <strong>Watermarked Image:</strong>
-            <br/>
-            <img src="/watermarked/{{session('xtralarge')}}"  />
-       	 </div> 
-        </div>
         @endif       
   </form>
   </div>

@@ -14,10 +14,15 @@ use App\Http\Controllers\ImageController;
 |
 */
 
-// Route::get('/', function () {
-//     return view('welcome');
-// });
+Route::get('/', function () {
+    return view('welcome');
+});
 
-Route::get('/',[ImageController::class, 'create']);
-Route::get('create',[ImageController::class, 'create']);
-Route::post('create',[ImageController::class, 'store']);
+// Route::get('/',[ImageController::class, 'create']);
+Route::get('/rainbow',[ImageController::class, 'rainbow']);
+
+Route::get('/create', [ImageController::class, 'creationStation']);
+
+Route::post('/create',[ImageController::class, 'store']);
+
+Route::get('/logomaker',[ImageController::class, 'store']);
