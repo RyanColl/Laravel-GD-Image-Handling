@@ -89,8 +89,8 @@
             <br/>
             <img src="/logoMakerImages/results/{{session('returnedImage3png')}}"  />
             <div class="control">
-              <a target="_blank" href="/logoMakerImages/results/{{session('returnedImage3png')}}" download><button class="btn btn-primary">PNG</button></a>
-              <a target="_blank" href="/logoMakerImages/results/{{session('returnedImage3jpg')}}" download><button class="btn btn-primary">JPG</button></a>
+              <a href="/logoMakerImages/results/{{session('returnedImage3png')}}" target="_blank"><button class="btn btn-primary">PNG</button></a>
+              <a href="/logoMakerImages/results/{{session('returnedImage3jpg')}}" target="_blank"><button class="btn btn-primary">JPG</button></a>
             </div>
        	 </div>
         </div>
