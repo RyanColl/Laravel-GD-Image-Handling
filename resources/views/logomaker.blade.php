@@ -20,16 +20,25 @@
         align-items: center;
         width: 100%;
       }
+      .flexy-row {
+        padding: 0.5em;
+        flex-direction: row !important;
+        justify-content: space-evenly !important;
+      }
+      .flexy-row button a {
+        text-decoration: none;
+        color: white;
+      }
       .container {}
   </style>
 </head>
 <body>
-  
+
   <div class="container">
     @if(session('success'))
         <div class="alert alert-success">
           {{ session('success') }}
-        </div> 
+        </div>
         @endif
         @if (count($errors) > 0)
       <div class="alert alert-danger">
@@ -45,36 +54,64 @@
     <h3 class="jumbotron">Laravel Creation Station <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"><a href="/">Return to Main Page</a></button></h3>
     <h4 class="jumbotron">Upload an image to see variations of the image returned. Fill out the watermark to see it on the image.</h4>
 
-    <form class='w-1/2' method="post" action="{{url('create')}}" enctype="multipart/form-data">
+    <form class='w-1/2' method="POST" action="{{url('logomaker')}}" enctype="multipart/form-data">
         @csrf
         <div class="row w-full">
           <div class="col-md-4"></div>
             <div class="form-group col-md-4 w-full">
+                <label id="businessTypes" for="businessTypes">Select Business Type:</label>
+                <input list="businessList" placeholder="Select type" id="businessTypes" name="businessTypes" class="form-control">
+                <datalist id="businessList">
+                    <option value="Animals">Animals</option>
+                    <option value="Education">Education</option>
+                    <option value="Finance">Finance</option>
+                    
+                </datalist>
+                <br>
+                <label id="businessName" for="businessName" class="form-group col-md-4 w-full">Name of your business: </label>
+                <br>
+                <input name="businessName" class="form-group col-md-4 w-full" type="text" >
 
-              <input type="file" name="filename" class="form-control">
             </div>
           </div>
         </div>
         <div class="row">
           <div class="col-md-4"></div>
           <div class="form-group col-md-4">
-          <button type="submit" class="btn btn-success" style="margin-top:10px">Upload Image</button>
+          <button type="submit" class="btn btn-success" style="margin-top:10px; margin-left:40px">Create My Logo</button>
           </div>
         </div>
         @if(session('success'))
    	    <div class="row xtra">
          <div class="col-md-4 control">
-            <strong>Thumbnail Image:</strong>
+            <strong>Option 1:</strong>
             <br/>
-            <img src="/thumbnail/{{session('thumbnail')}}"  />
-       	 </div> 
+            <img src="/logoMakerImages/results/{{session('returnedImage1png')}}" />
+            <div class="control flexy-row">
+              <button class="btn btn-primary"><a download href="/logoMakerImages/results/{{session('returnedImage1png')}}" target="_blank">PNG</a></button>
+              <button class="btn btn-primary"><a download href="/logoMakerImages/results/{{session('returnedImage1jpg')}}" target="_blank">JPG</a></button>
+            </div>
+       	 </div>
           <div class="col-md-4 control">
-            <strong>Watermarked Version:</strong>
+            <strong>Option: 2</strong>
             <br/>
-            <img src="/thumbnail/{{session('thumbnailWatermark')}}"  />
-       	 </div> 
+            <img src="/logoMakerImages/results/{{session('returnedImage2png')}}"  />
+            <div class="control flexy-row">
+              <button class="btn btn-primary"><a download href="/logoMakerImages/results/{{session('returnedImag2png')}}" target="_blank">PNG</a></button>
+              <button class="btn btn-primary"><a download href="/logoMakerImages/results/{{session('returnedImage2jpg')}}" target="_blank">JPG</a></button>
+            </div>
+       	 </div>
+          <div class="col-md-4 control">
+            <strong>Option: 3</strong>
+            <br/>
+            <img src="/logoMakerImages/results/{{session('returnedImage3png')}}"  />
+            <div class="control flexy-row">
+              <button class="btn btn-primary"><a download href="/logoMakerImages/results/{{session('returnedImage3png')}}" target="_blank">PNG</a></button>
+              <button class="btn btn-primary"><a download href="/logoMakerImages/results/{{session('returnedImage3jpg')}}" target="_blank">JPG</a></button>
+            </div>
+       	 </div>
         </div>
-        @endif       
+        @endif
   </form>
   </div>
 </body>

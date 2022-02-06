@@ -29,12 +29,12 @@ class ImageController extends Controller
             //create the image object based on input width and height
             $image_width=$base_width;$image_height=$base_height;
             //make image object
-            $img = imagecreatetruecolor($image_width,$image_height); 
+            $img = imagecreatetruecolor($image_width,$image_height);
 
             // create a white background to host the image, could probably make it transparent somehow
             $color = imagecolorallocate($img,255,255,255);
             imagefilledrectangle($img, 0, 0, $image_width, $image_height, $color);
-        
+
             function createArc($img, $d, $red, $green, $blue, $image_width, $image_height)
             {
                 // make circle radius
@@ -43,7 +43,7 @@ class ImageController extends Controller
                 // use d to center the image based on its size
                 $cx=$image_width/$d/2;
                 $cy=$image_height/$d/2;
-            
+
                 // allocate colour to arc
                 $color = imagecolorallocate($img, $red, $green, $blue);
                 // create image filled arc
@@ -72,6 +72,165 @@ class ImageController extends Controller
         // return view('createimage');
     }
 
+    public function createLogo(Request $request) {
+
+        // clearing results folder pre-emptively
+        function killFilesInResultsFolder() {
+            $files = glob(public_path().'/logoMakerImages/results/*'); // get all file names
+            foreach($files as $file) { // iterate files
+                if(is_file($file)) {
+                    unlink($file); // delete file
+                }
+            }
+        }
+        killFilesInResultsFolder();
+
+        // grab input of selected business from user
+        // grab input of text from user
+        // combine image with text
+        // convert and write as both png and jpg
+        // delete old images
+        // provide user option to download as jpg or png
+        $businessType = $request->input('businessTypes'); // works
+        $businessName = $request->input('businessName'); // works
+
+        $logoMakerImagesPath = public_path().'/logoMakerImages';
+        $ogAnimalPath = $logoMakerImagesPath.'/animals/animal.png';
+        $ogEducationPath = $logoMakerImagesPath.'/education/education.png';
+        
+
+
+
+        // make an image model based off of the original file
+
+        
+        
+
+        function applyTextToModel($model, $text, $top, $left) {
+            $model->text($text, $top, $left, function($font) {
+                $font->file(app_path().'/Fonts/NunitoSans-Regular.ttf');
+                $font->size(28);
+                $font->color([203, 105, 101, 1]);
+                $font->align('center');
+                $font->valign('top');
+                $font->angle(0);
+            });
+        }
+        if($businessType === 'Animals') {
+            $oganimalPath1 = $logoMakerImagesPath.'/animals/animal1.png';
+            $oganimalPath2 = $logoMakerImagesPath.'/animals/animal2.png';
+            $oganimalPath3 = $logoMakerImagesPath.'/animals/animal3.png';
+            $animalLogoImage1 = Image::make($oganimalPath1);
+            $animalLogoImage2 = Image::make($oganimalPath2);
+            $animalLogoImage3 = Image::make($oganimalPath3);
+            applyTextToModel($animalLogoImage1, $businessName, $animalLogoImage1->width()*0.5, $animalLogoImage1->height()*0.6);
+            applyTextToModel($animalLogoImage2, $businessName, $animalLogoImage2->width()*0.5, $animalLogoImage2->height()*0.6);
+            applyTextToModel($animalLogoImage3, $businessName, $animalLogoImage3->width()*0.5, $animalLogoImage3->height()*0.6);
+            $resultsFolder = $logoMakerImagesPath.'/results/';
+            $animalLogoImage1->save($resultsFolder.'/createdanimalLogo1.png');
+            $animalLogoImage1->save($resultsFolder.'/createdanimalLogo1.jpg');
+            $animalLogoImage2->save($resultsFolder.'/createdanimalLogo2.png');
+            $animalLogoImage2->save($resultsFolder.'/createdanimalLogo2.jpg');
+            $animalLogoImage3->save($resultsFolder.'/createdanimalLogo3.png');
+            $animalLogoImage3->save($resultsFolder.'/createdanimalLogo3.jpg');
+            $animalLogoImage1->destroy();
+            $animalLogoImage2->destroy();
+            $animalLogoImage3->destroy();
+            return back()
+            ->with('success', 'Logo Making Complete')
+            ->with('returnedImage1png', "createdanimalLogo1.png")
+            ->with('returnedImage1jpg', 'createdanimalLogo1.jpg')
+            ->with('returnedImage2png', "createdanimalLogo2.png")
+            ->with('returnedImage2jpg', 'createdanimalLogo2.jpg')
+            ->with('returnedImage3png', "createdanimalLogo3.png")
+            ->with('returnedImage3jpg', 'createdanimalLogo3.jpg');
+        } else if ($businessType === 'Education') {
+            // $educationLogoImage = Image::make($ogEducationPath);
+        
+            // applyTextToModel($educationLogoImage, $businessName, $educationLogoImage->height()/2, $educationLogoImage->width()*0.4);
+            // $resultsFolder = $logoMakerImagesPath.'/results/';
+            // $educationLogoImage->save($resultsFolder.'/createdEducationLogo.png');
+            // $educationLogoImage->save($resultsFolder.'/createdEducationLogo.jpg');
+            // $educationLogoImage->destroy();
+            // return back()
+            // ->with('success', 'Logo Making Complete')
+            // ->with('returnedImage1', "/createdEducationLogo.png")
+            // ->with('returnedImage2', '/createdEducationLogo.jpg');
+
+            $ogEducationPath1 = $logoMakerImagesPath.'/education/education1.png';
+            $ogEducationPath2 = $logoMakerImagesPath.'/education/education2.png';
+            $ogEducationPath3 = $logoMakerImagesPath.'/education/education3.png';
+            $educationLogoImage1 = Image::make($ogEducationPath1);
+            $educationLogoImage2 = Image::make($ogEducationPath2);
+            $educationLogoImage3 = Image::make($ogEducationPath3);
+            applyTextToModel($educationLogoImage1, $businessName, $educationLogoImage1->width()*0.5, $educationLogoImage1->height()*0.6);
+            applyTextToModel($educationLogoImage2, $businessName, $educationLogoImage2->width()*0.5, $educationLogoImage2->height()*0.6);
+            applyTextToModel($educationLogoImage3, $businessName, $educationLogoImage3->width()*0.5, $educationLogoImage3->height()*0.6);
+            $resultsFolder = $logoMakerImagesPath.'/results/';
+            $educationLogoImage1->save($resultsFolder.'/createdEducationLogo1.png');
+            $educationLogoImage1->save($resultsFolder.'/createdEducationLogo1.jpg');
+            $educationLogoImage2->save($resultsFolder.'/createdEducationLogo2.png');
+            $educationLogoImage2->save($resultsFolder.'/createdEducationLogo2.jpg');
+            $educationLogoImage3->save($resultsFolder.'/createdEducationLogo3.png');
+            $educationLogoImage3->save($resultsFolder.'/createdEducationLogo3.jpg');
+            $educationLogoImage1->destroy();
+            $educationLogoImage2->destroy();
+            $educationLogoImage3->destroy();
+            return back()
+            ->with('success', 'Logo Making Complete')
+            ->with('returnedImage1png', "createdEducationLogo1.png")
+            ->with('returnedImage1jpg', 'createdEducationLogo1.jpg')
+            ->with('returnedImage2png', "createdEducationLogo2.png")
+            ->with('returnedImage2jpg', 'createdEducationLogo2.jpg')
+            ->with('returnedImage3png', "createdEducationLogo3.png")
+            ->with('returnedImage3jpg', 'createdEducationLogo3.jpg');
+        } else if ($businessType === 'Finance') {
+            $ogFinancePath1 = $logoMakerImagesPath.'/finance/finance1.png';
+            $ogFinancePath2 = $logoMakerImagesPath.'/finance/finance2.png';
+            $ogFinancePath3 = $logoMakerImagesPath.'/finance/finance3.png';
+            $financeLogoImage1 = Image::make($ogFinancePath1);
+            $financeLogoImage2 = Image::make($ogFinancePath2);
+            $financeLogoImage3 = Image::make($ogFinancePath3);
+            applyTextToModel($financeLogoImage1, $businessName, $financeLogoImage1->width()*0.5, $financeLogoImage1->height()*0.6);
+            applyTextToModel($financeLogoImage2, $businessName, $financeLogoImage2->width()*0.5, $financeLogoImage2->height()*0.6);
+            applyTextToModel($financeLogoImage3, $businessName, $financeLogoImage3->width()*0.5, $financeLogoImage3->height()*0.6);
+            $resultsFolder = $logoMakerImagesPath.'/results/';
+            $financeLogoImage1->save($resultsFolder.'/createdFinanceLogo1.png');
+            $financeLogoImage1->save($resultsFolder.'/createdFinanceLogo1.jpg');
+            $financeLogoImage2->save($resultsFolder.'/createdFinanceLogo2.png');
+            $financeLogoImage2->save($resultsFolder.'/createdFinanceLogo2.jpg');
+            $financeLogoImage3->save($resultsFolder.'/createdFinanceLogo3.png');
+            $financeLogoImage3->save($resultsFolder.'/createdFinanceLogo3.jpg');
+            $financeLogoImage1->destroy();
+            $financeLogoImage2->destroy();
+            $financeLogoImage3->destroy();
+            return back()
+            ->with('success', 'Logo Making Complete')
+            ->with('returnedImage1png', "createdFinanceLogo1.png")
+            ->with('returnedImage1jpg', 'createdFinanceLogo1.jpg')
+            ->with('returnedImage2png', "createdFinanceLogo2.png")
+            ->with('returnedImage2jpg', 'createdFinanceLogo2.jpg')
+            ->with('returnedImage3png', "createdFinanceLogo3.png")
+            ->with('returnedImage3jpg', 'createdFinanceLogo3.jpg');
+        } else {
+            return back()->with('fail', 'error somehow?');
+        }
+
+        
+        
+        
+
+        
+        
+        
+
+        
+       
+        
+        
+        
+
+    }
 
     public function creationStation(Request $request)
     {
@@ -107,17 +266,17 @@ class ImageController extends Controller
         killFilesInPublicPath('/images/*');
         killFilesInPublicPath('/arcs/*');
         killFilesInPublicPath('/watermarked/*');
-        
+
         // get time
         $time = date('Mhis', time());
         // get extension
         $ext = $request->file('filename')->extension();
 
-        
+
          // THUMBNAIL
         // get file
         $ogFileName = $request->file('filename');
-        
+
         // make an image model based off of the original file
         $thumbnailImage = Image::make($ogFileName);
 
@@ -135,8 +294,8 @@ class ImageController extends Controller
         $thumbNailFullPath = $thumbnailPath.$thumbNail;
         // save the image model into the public directory with its own path.
         $thumbnailImage->save($ogFullPath);
-        
-        
+
+
         // using laravel ImageModel, we resize the image
         function changeSize($model, $multiplyer) {
             if($model->width() > 1500 || $model->height() > 1500) {
@@ -150,14 +309,14 @@ class ImageController extends Controller
             }
         }
         changeSize($thumbnailImage, 1);
-        
-        
-        // using laravel ImageModel, we rotate the image 
+
+
+        // using laravel ImageModel, we rotate the image
         // $thumbnailImage->rotate(180);
         // using laravel ImageModel, we save the image to the front end
-        $thumbnailImage->save($thumbNailFullPath); 
+        $thumbnailImage->save($thumbNailFullPath);
 
-        
+
 
         // WATERMARK
 
@@ -182,7 +341,7 @@ class ImageController extends Controller
             function addText($img, $text){
                 $font_path = app_path().'/Fonts/NunitoSans-Regular.ttf'; // font file path
                 $white = imagecolorallocatealpha($img, 255, 255, 255, 80); // Allocate A Color For The Text
-                imagestring($img, 5, 5, 50, $text, $white); // Print text on image   
+                imagestring($img, 5, 5, 50, $text, $white); // Print text on image
             }
             $watermarkPath = public_path().'/thumbnail/watermark';
             if($ext === 'jpeg' || $ext === 'jpg') {
@@ -221,7 +380,7 @@ class ImageController extends Controller
         $thumbnailImage->save(public_path()."/thumbnail/watermark.$ext");
         //destroy it
         $thumbnailImage->destroy();
-        
+
 
         // create from original path the file
         $smallVariant = Image::make($ogFullPath);
@@ -288,11 +447,11 @@ class ImageController extends Controller
         $xtraLargeVariant->save(public_path()."/watermarked/xtralarge.$ext");
         $xtraLargeVariant->destroy();
         // create empty model.
-        $imagemodel= new ImageModel();
-          // give it a file name.
-        $imagemodel->filename=$time.$ogFileName->getClientOriginalName();
-        // save it to the db => => => I think <= <= <=
-        $imagemodel->save();
+//        $imagemodel= new ImageModel();
+//          // give it a file name.
+//        $imagemodel->filename=$time.$ogFileName->getClientOriginalName();
+//        // save it to the db => => => I think <= <= <=
+//        $imagemodel->save();
 
 
 
@@ -349,6 +508,10 @@ class ImageController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function newPage() {
+        return view('newPage');
     }
 }
 
