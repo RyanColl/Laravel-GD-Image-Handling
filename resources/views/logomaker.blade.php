@@ -51,6 +51,22 @@
         </ul>
       </div>
     @endif
+    @if(session('fail'))
+        <div class="alert alert-danger">
+          {{ session('fail') }}
+        </div>
+        @endif
+        @if (count($errors) > 0)
+      <div class="alert alert-danger">
+        <strong>Whoops!</strong> There were some problems with your input.<br><br>
+        <ul>
+          @foreach ($errors->all() as $error)
+              <li>{{ $error }}</li>
+              <li>Please use filenames that do not contain weird characters like </li>
+          @endforeach
+        </ul>
+      </div>
+    @endif
     <h3 class="jumbotron">Laravel Creation Station <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"><a href="/">Return to Main Page</a></button></h3>
     <h4 class="jumbotron">Upload an image to see variations of the image returned. Fill out the watermark to see it on the image.</h4>
 
@@ -97,7 +113,7 @@
             <br/>
             <img src="/logoMakerImages/results/{{session('returnedImage2png')}}"  />
             <div class="control flexy-row">
-              <button class="btn btn-primary"><a download href="/logoMakerImages/results/{{session('returnedImag2png')}}" target="_blank">PNG</a></button>
+              <button class="btn btn-primary"><a download href="/logoMakerImages/results/{{session('returnedImage2png')}}" target="_blank">PNG</a></button>
               <button class="btn btn-primary"><a download href="/logoMakerImages/results/{{session('returnedImage2jpg')}}" target="_blank">JPG</a></button>
             </div>
        	 </div>
