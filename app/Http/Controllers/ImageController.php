@@ -29,12 +29,12 @@ class ImageController extends Controller
             //create the image object based on input width and height
             $image_width=$base_width;$image_height=$base_height;
             //make image object
-            $img = imagecreatetruecolor($image_width,$image_height); 
+            $img = imagecreatetruecolor($image_width,$image_height);
 
             // create a white background to host the image, could probably make it transparent somehow
             $color = imagecolorallocate($img,255,255,255);
             imagefilledrectangle($img, 0, 0, $image_width, $image_height, $color);
-        
+
             function createArc($img, $d, $red, $green, $blue, $image_width, $image_height)
             {
                 // make circle radius
@@ -43,7 +43,7 @@ class ImageController extends Controller
                 // use d to center the image based on its size
                 $cx=$image_width/$d/2;
                 $cy=$image_height/$d/2;
-            
+
                 // allocate colour to arc
                 $color = imagecolorallocate($img, $red, $green, $blue);
                 // create image filled arc
@@ -72,6 +72,17 @@ class ImageController extends Controller
         // return view('createimage');
     }
 
+    public function createLogo(Request $request) {
+        // grab input of selected business from user
+        // grab input of text from user
+        // combine image with text
+        // convert and write as both png and jpg
+        // delete old images
+        // provide user option to download as jpg or png
+
+
+
+    }
 
     public function creationStation(Request $request)
     {
@@ -107,17 +118,17 @@ class ImageController extends Controller
         killFilesInPublicPath('/images/*');
         killFilesInPublicPath('/arcs/*');
         killFilesInPublicPath('/watermarked/*');
-        
+
         // get time
         $time = date('Mhis', time());
         // get extension
         $ext = $request->file('filename')->extension();
 
-        
+
          // THUMBNAIL
         // get file
         $ogFileName = $request->file('filename');
-        
+
         // make an image model based off of the original file
         $thumbnailImage = Image::make($ogFileName);
 
@@ -135,8 +146,8 @@ class ImageController extends Controller
         $thumbNailFullPath = $thumbnailPath.$thumbNail;
         // save the image model into the public directory with its own path.
         $thumbnailImage->save($ogFullPath);
-        
-        
+
+
         // using laravel ImageModel, we resize the image
         function changeSize($model, $multiplyer) {
             if($model->width() > 1500 || $model->height() > 1500) {
@@ -150,14 +161,14 @@ class ImageController extends Controller
             }
         }
         changeSize($thumbnailImage, 1);
-        
-        
-        // using laravel ImageModel, we rotate the image 
+
+
+        // using laravel ImageModel, we rotate the image
         // $thumbnailImage->rotate(180);
         // using laravel ImageModel, we save the image to the front end
-        $thumbnailImage->save($thumbNailFullPath); 
+        $thumbnailImage->save($thumbNailFullPath);
 
-        
+
 
         // WATERMARK
 
@@ -182,7 +193,7 @@ class ImageController extends Controller
             function addText($img, $text){
                 $font_path = app_path().'/Fonts/NunitoSans-Regular.ttf'; // font file path
                 $white = imagecolorallocatealpha($img, 255, 255, 255, 80); // Allocate A Color For The Text
-                imagestring($img, 5, 5, 50, $text, $white); // Print text on image   
+                imagestring($img, 5, 5, 50, $text, $white); // Print text on image
             }
             $watermarkPath = public_path().'/thumbnail/watermark';
             if($ext === 'jpeg' || $ext === 'jpg') {
@@ -221,7 +232,7 @@ class ImageController extends Controller
         $thumbnailImage->save(public_path()."/thumbnail/watermark.$ext");
         //destroy it
         $thumbnailImage->destroy();
-        
+
 
         // create from original path the file
         $smallVariant = Image::make($ogFullPath);
@@ -288,11 +299,11 @@ class ImageController extends Controller
         $xtraLargeVariant->save(public_path()."/watermarked/xtralarge.$ext");
         $xtraLargeVariant->destroy();
         // create empty model.
-        $imagemodel= new ImageModel();
-          // give it a file name.
-        $imagemodel->filename=$time.$ogFileName->getClientOriginalName();
-        // save it to the db => => => I think <= <= <=
-        $imagemodel->save();
+//        $imagemodel= new ImageModel();
+//          // give it a file name.
+//        $imagemodel->filename=$time.$ogFileName->getClientOriginalName();
+//        // save it to the db => => => I think <= <= <=
+//        $imagemodel->save();
 
 
 
@@ -349,6 +360,10 @@ class ImageController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function newPage() {
+        return view('newPage');
     }
 }
 

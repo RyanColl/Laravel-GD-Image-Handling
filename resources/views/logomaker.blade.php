@@ -24,12 +24,12 @@
   </style>
 </head>
 <body>
-  
+
   <div class="container">
     @if(session('success'))
         <div class="alert alert-success">
           {{ session('success') }}
-        </div> 
+        </div>
         @endif
         @if (count($errors) > 0)
       <div class="alert alert-danger">
@@ -45,20 +45,30 @@
     <h3 class="jumbotron">Laravel Creation Station <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"><a href="/">Return to Main Page</a></button></h3>
     <h4 class="jumbotron">Upload an image to see variations of the image returned. Fill out the watermark to see it on the image.</h4>
 
-    <form class='w-1/2' method="post" action="{{url('create')}}" enctype="multipart/form-data">
+    <form class='w-1/2' method="get" action="{{url('createLogo')}}" enctype="multipart/form-data">
         @csrf
         <div class="row w-full">
           <div class="col-md-4"></div>
             <div class="form-group col-md-4 w-full">
+                <label id="businessTypes" for="businessTypes">Select Business Type:</label>
+                <input list="businessList" placeholder="Select type" id="businessTypes" name="businessTypes" class="form-control">
+                <datalist id="businessList">
+                    <option value="Animals">Animals</option>
+                    <option value="Education">Education</option>
+                    <option value="Finance">Finance</option>
+                </datalist>
+                <br>
+                <label id="businessName" for="businessName" class="form-group col-md-4 w-full">Name of your business: </label>
+                <br>
+                <input name="businessName" class="form-group col-md-4 w-full" type="text" >
 
-              <input type="file" name="filename" class="form-control">
             </div>
           </div>
         </div>
         <div class="row">
           <div class="col-md-4"></div>
           <div class="form-group col-md-4">
-          <button type="submit" class="btn btn-success" style="margin-top:10px">Upload Image</button>
+          <button type="submit" class="btn btn-success" style="margin-top:10px; margin-left:40px">Create My Logo</button>
           </div>
         </div>
         @if(session('success'))
@@ -67,14 +77,14 @@
             <strong>Thumbnail Image:</strong>
             <br/>
             <img src="/thumbnail/{{session('thumbnail')}}"  />
-       	 </div> 
+       	 </div>
           <div class="col-md-4 control">
             <strong>Watermarked Version:</strong>
             <br/>
             <img src="/thumbnail/{{session('thumbnailWatermark')}}"  />
-       	 </div> 
+       	 </div>
         </div>
-        @endif       
+        @endif
   </form>
   </div>
 </body>
