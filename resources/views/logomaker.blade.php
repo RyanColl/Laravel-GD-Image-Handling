@@ -20,6 +20,15 @@
         align-items: center;
         width: 100%;
       }
+      .flexy-row {
+        padding: 0.5em;
+        flex-direction: row !important;
+        justify-content: space-evenly !important;
+      }
+      .flexy-row button a {
+        text-decoration: none;
+        color: white;
+      }
       .container {}
   </style>
 </head>
@@ -75,22 +84,30 @@
         @if(session('success'))
    	    <div class="row xtra">
          <div class="col-md-4 control">
-            <strong>Resulting Images:</strong>
+            <strong>Option 1:</strong>
             <br/>
-            <img src="/logoMakerImages/results/{{session('returnedImage1png')}}"  />
+            <img src="/logoMakerImages/results/{{session('returnedImage1png')}}" />
+            <div class="control flexy-row">
+              <button class="btn btn-primary"><a download href="/logoMakerImages/results/{{session('returnedImage1png')}}" target="_blank">PNG</a></button>
+              <button class="btn btn-primary"><a download href="/logoMakerImages/results/{{session('returnedImage1jpg')}}" target="_blank">JPG</a></button>
+            </div>
        	 </div>
           <div class="col-md-4 control">
-            <strong>Resulting Images:</strong>
+            <strong>Option: 2</strong>
             <br/>
             <img src="/logoMakerImages/results/{{session('returnedImage2png')}}"  />
+            <div class="control flexy-row">
+              <button class="btn btn-primary"><a download href="/logoMakerImages/results/{{session('returnedImag2png')}}" target="_blank">PNG</a></button>
+              <button class="btn btn-primary"><a download href="/logoMakerImages/results/{{session('returnedImage2jpg')}}" target="_blank">JPG</a></button>
+            </div>
        	 </div>
           <div class="col-md-4 control">
-            <strong>Resulting Images:</strong>
+            <strong>Option: 3</strong>
             <br/>
             <img src="/logoMakerImages/results/{{session('returnedImage3png')}}"  />
-            <div class="control">
-              <a href="/logoMakerImages/results/{{session('returnedImage3png')}}" target="_blank"><button class="btn btn-primary">PNG</button></a>
-              <a href="/logoMakerImages/results/{{session('returnedImage3jpg')}}" target="_blank"><button class="btn btn-primary">JPG</button></a>
+            <div class="control flexy-row">
+              <button class="btn btn-primary"><a download href="/logoMakerImages/results/{{session('returnedImage3png')}}" target="_blank">PNG</a></button>
+              <button class="btn btn-primary"><a download href="/logoMakerImages/results/{{session('returnedImage3jpg')}}" target="_blank">JPG</a></button>
             </div>
        	 </div>
         </div>
