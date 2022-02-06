@@ -45,7 +45,7 @@
     <h3 class="jumbotron">Laravel Creation Station <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"><a href="/">Return to Main Page</a></button></h3>
     <h4 class="jumbotron">Upload an image to see variations of the image returned. Fill out the watermark to see it on the image.</h4>
 
-    <form class='w-1/2' method="get" action="{{url('createLogo')}}" enctype="multipart/form-data">
+    <form class='w-1/2' method="POST" action="{{url('logomaker')}}" enctype="multipart/form-data">
         @csrf
         <div class="row w-full">
           <div class="col-md-4"></div>
@@ -75,15 +75,12 @@
         @if(session('success'))
    	    <div class="row xtra">
          <div class="col-md-4 control">
-            <strong>Thumbnail Image:</strong>
+            <strong>Resulting Images:</strong>
             <br/>
-            <img src="/thumbnail/{{session('thumbnail')}}"  />
+            <img src="/logoMakerImages/results/{{session('returnedImage1')}}"  />
+            <img src="/logoMakerImages/results/{{session('returnedImage2')}}"  />
        	 </div>
-          <div class="col-md-4 control">
-            <strong>Watermarked Version:</strong>
-            <br/>
-            <img src="/thumbnail/{{session('thumbnailWatermark')}}"  />
-       	 </div>
+          
         </div>
         @endif
   </form>

@@ -73,14 +73,96 @@ class ImageController extends Controller
     }
 
     public function createLogo(Request $request) {
+
+        // clearing results folder pre-emptively
+        function killFilesInResultsFolder() {
+            $files = glob(public_path().'/logoMakerImages/results/*'); // get all file names
+            foreach($files as $file) { // iterate files
+                if(is_file($file)) {
+                    unlink($file); // delete file
+                }
+            }
+        }
+        killFilesInResultsFolder();
+
         // grab input of selected business from user
         // grab input of text from user
         // combine image with text
         // convert and write as both png and jpg
         // delete old images
         // provide user option to download as jpg or png
+        $businessType = $request->input('businessTypes'); // works
+        $businessName = $request->input('businessName'); // works
 
+        $logoMakerImagesPath = public_path().'/logoMakerImages';
+        $ogAnimalPath = $logoMakerImagesPath.'/animals/animal.png';
+        $ogEducationPath = $logoMakerImagesPath.'/education/education.png';
+        $ogFinancePath = $logoMakerImagesPath.'/finance/finance.png';
 
+        // make an image model based off of the original file
+
+        
+        $animalLogoImage = Image::make($ogAnimalPath);
+        $educationLogoImage = Image::make($ogEducationPath);
+        $financeLogoImage = Image::make($ogFinancePath);
+
+        function applyTextToModel($model, $text, $top, $left) {
+            $model->text($text, $top, $left, function($font) {
+                $font->file(app_path().'/Fonts/NunitoSans-Regular.ttf');
+                $font->size(24);
+                $font->color([45, 51, 59, 1]);
+                $font->align('center');
+                $font->valign('top');
+                $font->angle(0);
+            });
+        }
+        if($businessType === 'Animals') {
+            applyTextToModel($animalLogoImage, $businessName, $animalLogoImage->height()/2, $animalLogoImage->width()*0.4);
+            $resultsFolder = $logoMakerImagesPath.'/results/';
+            $animalLogoImage->save($resultsFolder.'/createdAnimalLogo.png');
+            $animalLogoImage->save($resultsFolder.'/createdAnimalLogo.jpg');
+            $animalLogoImage->destroy();
+            return back()
+            ->with('success', 'Logo Making Complete')
+            ->with('returnedImage1', "/createdAnimalLogo.png")
+            ->with('returnedImage2', '/createdAnimalLogo.jpg');
+        } else if ($businessType === 'Education') {
+            applyTextToModel($educationLogoImage, $businessName, $educationLogoImage->height()/2, $educationLogoImage->width()*0.4);
+            $resultsFolder = $logoMakerImagesPath.'/results/';
+            $educationLogoImage->save($resultsFolder.'/createdEducationLogo.png');
+            $educationLogoImage->save($resultsFolder.'/createdEducationLogo.jpg');
+            $educationLogoImage->destroy();
+            return back()
+            ->with('success', 'Logo Making Complete')
+            ->with('returnedImage1', "/createdEducationLogo.png")
+            ->with('returnedImage2', '/createdEducationLogo.jpg');
+        } else if ($businessType === 'Finance') {
+            applyTextToModel($financeLogoImage, $businessName, $financeLogoImage->height()/2, $financeLogoImage->width()*0.4);
+            $resultsFolder = $logoMakerImagesPath.'/results/';
+            $financeLogoImage->save($resultsFolder.'/createdFinanceLogo.png');
+            $financeLogoImage->save($resultsFolder.'/createdFinanceLogo.jpg');
+            $financeLogoImage->destroy();
+            return back()
+            ->with('success', 'Logo Making Complete')
+            ->with('returnedImage1', "/createdFinanceLogo.png")
+            ->with('returnedImage2', '/createdFinanceLogo.jpg');
+        } else {
+            return back()->with('fail', 'error somehow?');
+        }
+
+        
+        
+        
+
+        
+        
+        
+
+        
+       
+        
+        
+        
 
     }
 

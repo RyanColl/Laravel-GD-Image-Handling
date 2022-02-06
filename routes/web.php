@@ -27,6 +27,8 @@ Route::post('/create',[ImageController::class, 'store']); // store is a post-onl
 
 Route::get('/logomaker',[ImageController::class, 'logoMaker']);
 
+Route::post('/logomaker', [ImageController::class, 'createLogo']);
+
 Route::get('/newPage',[ImageController::class, 'newPage']);
 
-Route::get('/createLogo', [ImageController::class, 'createLogo']);
+
