@@ -97,14 +97,14 @@ class ImageController extends Controller
         $logoMakerImagesPath = public_path().'/logoMakerImages';
         $ogAnimalPath = $logoMakerImagesPath.'/animals/animal.png';
         $ogEducationPath = $logoMakerImagesPath.'/education/education.png';
-        $ogFinancePath = $logoMakerImagesPath.'/finance/finance.png';
+        
+
+
 
         // make an image model based off of the original file
 
         
-        $animalLogoImage = Image::make($ogAnimalPath);
-        $educationLogoImage = Image::make($ogEducationPath);
-        $financeLogoImage = Image::make($ogFinancePath);
+        
 
         function applyTextToModel($model, $text, $top, $left) {
             $model->text($text, $top, $left, function($font) {
@@ -117,6 +117,8 @@ class ImageController extends Controller
             });
         }
         if($businessType === 'Animals') {
+            $animalLogoImage = Image::make($ogAnimalPath);
+        
             applyTextToModel($animalLogoImage, $businessName, $animalLogoImage->height()/2, $animalLogoImage->width()*0.4);
             $resultsFolder = $logoMakerImagesPath.'/results/';
             $animalLogoImage->save($resultsFolder.'/createdAnimalLogo.png');
@@ -127,6 +129,8 @@ class ImageController extends Controller
             ->with('returnedImage1', "/createdAnimalLogo.png")
             ->with('returnedImage2', '/createdAnimalLogo.jpg');
         } else if ($businessType === 'Education') {
+            $educationLogoImage = Image::make($ogEducationPath);
+        
             applyTextToModel($educationLogoImage, $businessName, $educationLogoImage->height()/2, $educationLogoImage->width()*0.4);
             $resultsFolder = $logoMakerImagesPath.'/results/';
             $educationLogoImage->save($resultsFolder.'/createdEducationLogo.png');
@@ -137,15 +141,33 @@ class ImageController extends Controller
             ->with('returnedImage1', "/createdEducationLogo.png")
             ->with('returnedImage2', '/createdEducationLogo.jpg');
         } else if ($businessType === 'Finance') {
-            applyTextToModel($financeLogoImage, $businessName, $financeLogoImage->height()/2, $financeLogoImage->width()*0.4);
+            $ogFinancePath1 = $logoMakerImagesPath.'/finance/finance1.png';
+            $ogFinancePath2 = $logoMakerImagesPath.'/finance/finance2.png';
+            $ogFinancePath3 = $logoMakerImagesPath.'/finance/finance3.png';
+            $financeLogoImage1 = Image::make($ogFinancePath1);
+            $financeLogoImage2 = Image::make($ogFinancePath2);
+            $financeLogoImage3 = Image::make($ogFinancePath3);
+            applyTextToModel($financeLogoImage1, $businessName, $financeLogoImage1->height()*0.65, $financeLogoImage1->width()*0.4);
+            applyTextToModel($financeLogoImage2, $businessName, $financeLogoImage2->height()*0.65, $financeLogoImage2->width()*0.4);
+            applyTextToModel($financeLogoImage3, $businessName, $financeLogoImage3->height()*0.65, $financeLogoImage3->width()*0.4);
             $resultsFolder = $logoMakerImagesPath.'/results/';
-            $financeLogoImage->save($resultsFolder.'/createdFinanceLogo.png');
-            $financeLogoImage->save($resultsFolder.'/createdFinanceLogo.jpg');
-            $financeLogoImage->destroy();
+            $financeLogoImage1->save($resultsFolder.'/createdFinanceLogo1.png');
+            $financeLogoImage1->save($resultsFolder.'/createdFinanceLogo1.jpg');
+            $financeLogoImage2->save($resultsFolder.'/createdFinanceLogo2.png');
+            $financeLogoImage2->save($resultsFolder.'/createdFinanceLogo2.jpg');
+            $financeLogoImage3->save($resultsFolder.'/createdFinanceLogo3.png');
+            $financeLogoImage3->save($resultsFolder.'/createdFinanceLogo3.jpg');
+            $financeLogoImage1->destroy();
+            $financeLogoImage2->destroy();
+            $financeLogoImage3->destroy();
             return back()
             ->with('success', 'Logo Making Complete')
-            ->with('returnedImage1', "/createdFinanceLogo.png")
-            ->with('returnedImage2', '/createdFinanceLogo.jpg');
+            ->with('returnedImage1png', "createdFinanceLogo1.png")
+            ->with('returnedImage1jpg', 'createdFinanceLogo1.jpg')
+            ->with('returnedImage2png', "createdFinanceLogo2.png")
+            ->with('returnedImage2jpg', 'createdFinanceLogo2.jpg')
+            ->with('returnedImage3png', "createdFinanceLogo3.png")
+            ->with('returnedImage3jpg', 'createdFinanceLogo3.jpg');
         } else {
             return back()->with('fail', 'error somehow?');
         }

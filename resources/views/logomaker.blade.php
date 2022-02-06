@@ -77,10 +77,22 @@
          <div class="col-md-4 control">
             <strong>Resulting Images:</strong>
             <br/>
-            <img src="/logoMakerImages/results/{{session('returnedImage1')}}"  />
-            <img src="/logoMakerImages/results/{{session('returnedImage2')}}"  />
+            <img src="/logoMakerImages/results/{{session('returnedImage1png')}}"  />
        	 </div>
-          
+          <div class="col-md-4 control">
+            <strong>Resulting Images:</strong>
+            <br/>
+            <img src="/logoMakerImages/results/{{session('returnedImage2png')}}"  />
+       	 </div>
+          <div class="col-md-4 control">
+            <strong>Resulting Images:</strong>
+            <br/>
+            <img src="/logoMakerImages/results/{{session('returnedImage3png')}}"  />
+            <div class="control">
+              <a target="_blank" href="/logoMakerImages/results/{{session('returnedImage3png')}}" download><button class="btn btn-primary">PNG</button></a>
+              <a target="_blank" href="/logoMakerImages/results/{{session('returnedImage3jpg')}}" download><button class="btn btn-primary">JPG</button></a>
+            </div>
+       	 </div>
         </div>
         @endif
   </form>

@@ -30,5 +30,3 @@ Route::get('/logomaker',[ImageController::class, 'logoMaker']);
 Route::post('/logomaker', [ImageController::class, 'createLogo']);
 
 Route::get('/newPage',[ImageController::class, 'newPage']);
-
-
