@@ -172,23 +172,8 @@ class ImageController extends Controller
             ->with('returnedImage3png', "finance3.png")
             ->with('returnedImage3jpg', 'finance3.jpg');
         } else {
-            return back()->with('fail', 'Invalid business type');
+            return back()->with('fail', "Invalid business type: $businessType");
         }
-
-        
-        
-        
-
-        
-        
-        
-
-        
-       
-        
-        
-        
-
     }
 
     public function creationStation(Request $request)
