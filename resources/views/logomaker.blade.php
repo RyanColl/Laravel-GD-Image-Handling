@@ -56,6 +56,7 @@
                     <option value="Animals">Animals</option>
                     <option value="Education">Education</option>
                     <option value="Finance">Finance</option>
+                    
                 </datalist>
                 <br>
                 <label id="businessName" for="businessName" class="form-group col-md-4 w-full">Name of your business: </label>
