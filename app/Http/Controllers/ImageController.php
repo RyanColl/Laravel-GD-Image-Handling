@@ -66,7 +66,6 @@ class ImageController extends Controller
         $imagemodel= new ImageModel();
         $imagemodel->filename=time().'arc.png';
         $imagemodel->save();
-
         $image = ImageModel::latest()->first();
         return view('rainbow', compact('image'));
         // return view('createimage');
@@ -239,7 +238,6 @@ class ImageController extends Controller
         // save the image model into the public directory with its own path.
         $thumbnailImage->save($ogFullPath);
 
-
         // using laravel ImageModel, we resize the image
         function changeSize($model, $multiplyer) {
             if($model->width() > 1500 || $model->height() > 1500) {
@@ -253,21 +251,14 @@ class ImageController extends Controller
             }
         }
         changeSize($thumbnailImage, 1);
-
-
         // using laravel ImageModel, we rotate the image
         // $thumbnailImage->rotate(180);
         // using laravel ImageModel, we save the image to the front end
         $thumbnailImage->save($thumbNailFullPath);
 
-
-
         // WATERMARK
-
         //get watermark from user input
         $watermark = $request->input('watermark');
-
-
         //intervention uses gd library
         function applyTextToModel($model, $text, $width, $height) {
             $model->text($text, $width, $height, function($font) {
@@ -325,15 +316,12 @@ class ImageController extends Controller
         //destroy it
         $thumbnailImage->destroy();
 
-
         // create from original path the file
         $smallVariant = Image::make($ogFullPath);
         // use change size to make it small
         changeSize($smallVariant, 2);
-
         // save it as small
         $smallVariant->save(public_path()."/images/small.$ext");
-
         $smallVariant->text($watermark, $width/5/2, $height/5/2, function($font) {
             $font->file(app_path().'/Fonts/NunitoSans-Regular.ttf');
             $font->size(32);
@@ -342,13 +330,8 @@ class ImageController extends Controller
             $font->valign('top');
             $font->angle(45);
         });
-        // use intervention to apply text to image with filters
-        // applyTextToModel($smallVariant, $watermark, $width/5/2, $height/5/2);
-
-
         // save it as watermarked
         $smallVariant->save(public_path()."/watermarked/small.$ext");
-
         $smallVariant->destroy();
 
         // create image from original's full path
@@ -390,14 +373,6 @@ class ImageController extends Controller
         });
         $xtraLargeVariant->save(public_path()."/watermarked/xtralarge.$ext");
         $xtraLargeVariant->destroy();
-        // create empty model.
-//        $imagemodel= new ImageModel();
-//          // give it a file name.
-//        $imagemodel->filename=$time.$ogFileName->getClientOriginalName();
-//        // save it to the db => => => I think <= <= <=
-//        $imagemodel->save();
-
-
 
         return back()
             ->with('success', 'Your images has been successfully Uploaded')
